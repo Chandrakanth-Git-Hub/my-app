@@ -85,11 +85,21 @@ pipeline {
             script {
                 common.notify("SUCCESS")
             }
+		emailext (
+           		 subject: "Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+           		 body: "Good news! The build was successful.",
+           		 to: "chandubhavi123@gmail.com"
+       		 )
         }
         failure {
             script {
                 common.notify("FAILURE")
             }
+		emailext (
+           		 subject: "Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+           		 body: "Oops! The build failed. Please check Jenkins logs.",
+           		 to: "chandubhavi123@gmail.com"
+       		 )
         }
     }
 }
