@@ -4,8 +4,8 @@ pipeline {
     agent { label 'linux-build-1' }
 
     triggers {
-        // Scheduled trigger – runs every night at 2 AM
-        cron('0 2 * * *')
+    	githubPush()           // Trigger on GitHub webhook
+    	cron('H 2 * * *')      // Also run nightly at 2 AM
     }
 
     stages {
