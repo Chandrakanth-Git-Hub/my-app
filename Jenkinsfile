@@ -4,16 +4,18 @@ pipeline {
     agent { label 'linux-build-1' }
 
     triggers {
-        
-        // Scheduled trigger – runs every night 2 AM
+        // Scheduled trigger – runs every night at 2 AM
         cron('0 2 * * *')
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
-                common.info("Code checked out successfully!")
+                script {
+                    common.info("Code checked out successfully!")
+                }
             }
         }
 
@@ -38,7 +40,7 @@ pipeline {
                 stage('Integration Tests') {
                     steps {
                         unstash 'buildFiles'
-                        echo 'Running integration tests...'
+                        echo "Running integration tests..."
                         sh "echo 'Integration Test Passed' > integ_result.txt"
                         archiveArtifacts artifacts: 'integ_result.txt'
                     }
@@ -58,15 +60,19 @@ pipeline {
         stage('Publish Artifact') {
             steps {
                 unstash 'artifact'
+
                 withCredentials([usernamePassword(
                     credentialsId: 'artifact-cred',
                     usernameVariable: 'USER',
                     passwordVariable: 'PASS'
                 )]) {
                     echo "Publishing using USER=$USER"
-                    sh "echo 'uploading app.zip to server...' "
+                    sh "echo 'uploading app.zip to server...'"
                 }
-                common.info("Artifact published successfully!")
+
+                script {
+                    common.info("Artifact published successfully!")
+                }
             }
         }
     }
@@ -76,10 +82,14 @@ pipeline {
             echo "Post: Always executed"
         }
         success {
-            common.notify("SUCCESS")
+            script {
+                common.notify("SUCCESS")
+            }
         }
         failure {
-            common.notify("FAILURE")
+            script {
+                common.notify("FAILURE")
+            }
         }
     }
 }
