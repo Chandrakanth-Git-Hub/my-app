@@ -1,11 +1,9 @@
 @Library('my-shared-lib') _
 
 pipeline {
-    agent any
+    agent { label 'linux-build-1' }
 
     triggers {
-        // Webhook triggers automatically when push happens
-        // (Enable in Jenkins job: GitHub hook trigger)
         
         // Scheduled trigger – runs every night 2 AM
         cron('0 2 * * *')
